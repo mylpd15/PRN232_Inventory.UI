@@ -1,0 +1,20 @@
+/* src/components/ExampleComponent/ExampleComponent.module.css */
+
+@keyframes errorPopup {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(1.0rem);
+    }
+  }
+  
+  .error {
+    animation: errorPopup 0.5s ease-in-out;
+    transform: translateY(1.0rem);
+    color: #ef4444; /* text-red-500 */
+    padding-bottom: 1.0rem; /*p-5 */
+    font-weight: 500; /* font-medium */
+    font-size: 0.75rem; /* text-xs */
+  }
+  
