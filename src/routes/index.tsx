@@ -15,16 +15,16 @@ const Route = () => {
           element: <Home />,
         },
         ...userRoutes,
-        {
-          path: "demo",
-          element: <Intro />,
-        },
       ],
     },
     ...authRoutes,
     {
       path: "*",
       element: <NotFound />,
+    },
+    {
+      path: "demo",
+      element: <Intro />,
     },
   ]);
 

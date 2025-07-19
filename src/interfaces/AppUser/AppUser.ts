@@ -6,7 +6,7 @@ export interface AppUser {
   username: string;
   email: string;
   isDisabled: boolean;
-  userRole: UserRole;
+  userRole: string;
 }
 
 export interface AddUserDto {
