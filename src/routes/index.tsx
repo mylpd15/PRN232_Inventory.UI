@@ -4,6 +4,8 @@ import authRoutes from "./Auth";
 import { Intro } from "../pages/Intro";
 import userRoutes from "./Users";
 import ProtectedRoute from "./ProtectedRoute";
+import { CustomersPage } from '../pages';
+import { DeliveriesPage } from '../pages';
 
 const Route = () => {
   const routes = useRoutes([
@@ -18,6 +20,18 @@ const Route = () => {
         {
           path: "demo",
           element: <Intro />,
+        },
+        {
+          path: "/customers",
+          element: <CustomersPage />,
+        },
+        {
+          path: "/deliveries",
+          element: <DeliveriesPage />,
+        },
+        {
+          path: "/deliveries/:customerId",
+          element: <DeliveriesPage />,
         },
       ],
     },
