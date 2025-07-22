@@ -44,6 +44,11 @@ export async function createDelivery(data: Omit<Delivery, 'DeliveryID'>) {
     },
     body: JSON.stringify(data),
   });
+  if (!res.ok) {
+    const errorText = await res.text();
+    const errorJson = JSON.parse(errorText);
+    throw new Error(errorJson.message || `Failed to add delivery: ${res.status}`);
+  }
   return res.json();
 }
 
@@ -56,6 +61,18 @@ export async function updateDelivery(deliveryId: number | string, data: Partial<
     },
     body: JSON.stringify(data),
   });
+  if (!res.ok) {
+    const errorText = await res.text();
+    try {
+      const errorJson = JSON.parse(errorText);
+      if (errorJson && errorJson.message) {
+        throw new Error(errorJson.message);
+      }
+    } catch {
+      // Not JSON, fall through
+    }
+    throw new Error(errorText || `Failed to update delivery: ${res.status}`);
+  }
   if (res.status === 204) return;
   return res.json();
 }

@@ -135,11 +135,6 @@ const DeliveriesPage: React.FC = () => {
     setShowModal(true);
   };
 
-  // const handleDelete = (deliveryID: number) => {
-  //   setDeleteDeliveryId(deliveryID);
-  //   setShowDeleteModal(true);
-  // };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -186,22 +181,10 @@ const DeliveriesPage: React.FC = () => {
       }
       setShowModal(false);
       fetchDeliveries();
-    } catch (error) {
-      toast.error('Failed to save delivery');
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to save delivery');
     }
   };
-
-  // const confirmDelete = async () => {
-  //   if (deleteDeliveryId == null) return;
-  //   try {
-  //     await deleteDelivery(deleteDeliveryId);
-  //     toast.success('Delivery deleted successfully');
-  //     setShowDeleteModal(false);
-  //     fetchDeliveries();
-  //   } catch (error) {
-  //     toast.error('Failed to delete delivery');
-  //   }
-  // };
 
   return (
     <MainLayout>
@@ -229,9 +212,7 @@ const DeliveriesPage: React.FC = () => {
                   <th className="py-2 px-4 border-b text-center">DeliveryID</th>
                   <th className="py-2 px-4 border-b text-center">SalesDate</th>
                   <th className="py-2 px-4 border-b text-center">Status</th>
-                  <th className="py-2 px-4 border-b text-center">CreatedBy</th>
                   <th className="py-2 px-4 border-b text-center">CreatedDate</th>
-                  <th className="py-2 px-4 border-b text-center">UpdatedBy</th>
                   <th className="py-2 px-4 border-b text-center">UpdatedDate</th>
                   <th className="py-2 px-4 border-b text-center">Actions</th>
                 </tr>
@@ -242,9 +223,7 @@ const DeliveriesPage: React.FC = () => {
                     <td className="py-2 px-4 border-b text-center">{delivery.DeliveryID}</td>
                     <td className="py-2 px-4 border-b text-center">{delivery.SalesDate ? new Date(delivery.SalesDate).toLocaleString() : ''}</td>
                     <td className="py-2 px-4 border-b text-center">{delivery.Status}</td>
-                    <td className="py-2 px-4 border-b text-center">{delivery.CreatedBy}</td>
                     <td className="py-2 px-4 border-b text-center">{delivery.CreatedDate ? new Date(delivery.CreatedDate).toLocaleString() : ''}</td>
-                    <td className="py-2 px-4 border-b text-center">{delivery.UpdatedBy}</td>
                     <td className="py-2 px-4 border-b text-center">{delivery.UpdatedDate ? new Date(delivery.UpdatedDate).toLocaleString() : ''}</td>
                     <td className="py-2 px-4 border-b flex gap-2 justify-center text-center">
                       <button
@@ -291,8 +270,8 @@ const DeliveriesPage: React.FC = () => {
       )}
       {/* Add/Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded shadow w-full max-w-md">
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded shadow w-full max-w-2xl">
             <h2 className="text-xl font-bold mb-4">{editDelivery ? 'Edit Delivery' : 'Add Delivery'}</h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
@@ -322,47 +301,60 @@ const DeliveriesPage: React.FC = () => {
                   ))}
                 </select>
               </div>
-              {/* Remove Status field from modal */}
               <div className="mb-4">
                 <label className="block mb-1">Delivery Details</label>
                 <div className="space-y-2">
-                  {Array.isArray(form.deliveryDetails) && form.deliveryDetails.map((detail: DeliveryDetailForm, idx: number) => (
-                    <div key={idx} className="flex gap-2 items-center">
-                      <select
-                        className="border px-2 py-1 rounded"
-                        value={detail.productID}
-                        onChange={e => handleDetailChange(idx, 'productID', Number(e.target.value))}
-                        required
-                      >
-                        <option value="">Select Product</option>
-                        {products.map(p => (
-                          <option key={p.productID} value={p.productID}>{p.productName}</option>
-                        ))}
-                      </select>
-                      <input
-                        className="border px-2 py-1 rounded w-20"
-                        type="number"
-                        min={1}
-                        value={detail.deliveryQuantity}
-                        onChange={e => handleDetailChange(idx, 'deliveryQuantity', Number(e.target.value))}
-                        required
-                        placeholder="Quantity"
-                      />
-                      <input
-                        className="border px-2 py-1 rounded"
-                        type="date"
-                        value={detail.expectedDate}
-                        onChange={e => handleDetailChange(idx, 'expectedDate', e.target.value)}
-                        required
-                      />
-                      <button
-                        type="button"
-                        className="text-red-500 hover:underline px-2"
-                        onClick={() => handleRemoveDetail(idx)}
-                        title="Remove"
-                      >✕</button>
-                    </div>
-                  ))}
+                  {Array.isArray(form.deliveryDetails) && form.deliveryDetails.map((detail: DeliveryDetailForm, idx: number) => {
+                    const product = products.find(p => p.productID === detail.productID);
+                    const today = new Date().toISOString().split('T')[0];
+                    return (
+                      <div key={idx} className="flex gap-2 items-center">
+                        <div className="flex flex-col">
+                          <select
+                            className="border px-2 py-1 rounded"
+                            value={detail.productID}
+                            onChange={e => handleDetailChange(idx, 'productID', Number(e.target.value))}
+                            required
+                          >
+                            <option value="">Select Product</option>
+                            {products.map(p => (
+                              <option key={p.productID} value={p.productID}>{p.productName}</option>
+                            ))}
+                          </select>
+                          <span className="text-xs text-gray-500">{product ? `Product: ${product.productName}` : 'Select a product'}</span>
+                        </div>
+                        <div className="flex flex-col">
+                          <input
+                            className="border px-2 py-1 rounded w-20"
+                            type="number"
+                            min={1}
+                            value={detail.deliveryQuantity}
+                            onChange={e => handleDetailChange(idx, 'deliveryQuantity', Number(e.target.value))}
+                            required
+                            placeholder="Quantity"
+                          />
+                          <span className="text-xs text-gray-500">Enter quantity</span>
+                        </div>
+                        <div className="flex flex-col">
+                          <input
+                            className="border px-2 py-1 rounded"
+                            type="date"
+                            min={today}
+                            value={detail.expectedDate}
+                            onChange={e => handleDetailChange(idx, 'expectedDate', e.target.value)}
+                            required
+                          />
+                          <span className="text-xs text-gray-500">Expected date</span>
+                        </div>
+                        <button
+                          type="button"
+                          className="text-red-500 hover:underline px-2"
+                          onClick={() => handleRemoveDetail(idx)}
+                          title="Remove"
+                        >✕</button>
+                      </div>
+                    );
+                  })}
                   <button
                     type="button"
                     className="mt-2 px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
