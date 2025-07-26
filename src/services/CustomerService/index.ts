@@ -1,5 +1,4 @@
-const API_BASE = 'https://localhost:7136/odata/Customers';
-
+const API_BASE = `${import.meta.env.VITE_SERVER_URL}/odata/Customers`;
 function getToken() {
   return localStorage.getItem('token');
 }

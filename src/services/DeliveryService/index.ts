@@ -1,5 +1,5 @@
-const API_BASE = 'https://localhost:7136/odata/Deliveries';
-const DELIVERY_DETAILS_API = 'https://localhost:7136/odata/DeliveryDetails';
+const API_BASE = `${import.meta.env.VITE_SERVER_URL}/odata/Deliveries`;
+const DELIVERY_DETAILS_API = `${import.meta.env.VITE_SERVER_URL}/odata/DeliveryDetails`;
 
 export interface DeliveryDetail {
   deliveryDetailID: number;
