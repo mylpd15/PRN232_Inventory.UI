@@ -10,13 +10,17 @@ import {
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
+interface CustomerWithDeliveries extends Customer {
+  hasDeliveries?: boolean;
+}
+
 const defaultForm: Omit<Customer, 'customerID'> = {
   CustomerName: '',
   CustomerAddress: '',
 };
 
 const CustomersPage: React.FC = () => {
-  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [customers, setCustomers] = useState<CustomerWithDeliveries[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editCustomer, setEditCustomer] = useState<Customer | null>(null);
@@ -29,13 +33,36 @@ const CustomersPage: React.FC = () => {
   const totalPages = Math.ceil(customers.length / itemsPerPage);
   const paginatedCustomers = customers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
+  const checkCustomerDeliveries = async (customerId: number): Promise<boolean> => {
+    try {
+      const response = await fetch(`https://localhost:7136/odata/Deliveries?$filter=customerID eq ${customerId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      const data = await response.json();
+      return data.value && Array.isArray(data.value) && data.value.length > 0;
+    } catch (error) {
+      return false;
+    }
+  };
+
   const fetchCustomers = async () => {
     setLoading(true);
     try {
       const data = await getCustomers(20);
       if (data && Array.isArray(data.value)) {
         console.log(data.value);
-        setCustomers(data.value);
+        
+        // Check deliveries for each customer
+        const customersWithDeliveries = await Promise.all(
+          data.value.map(async (customer: CustomerWithDeliveries) => {
+            const hasDeliveries = await checkCustomerDeliveries(customer.CustomerID!);
+            return { ...customer, hasDeliveries };
+          })
+        );
+        
+        setCustomers(customersWithDeliveries);
       } else {
         setCustomers([]);
       }
@@ -150,10 +177,12 @@ const CustomersPage: React.FC = () => {
                         className="text-red-500 hover:underline mr-2"
                         onClick={() => handleDelete(customer.CustomerID!)}
                       >Delete</button>
-                      <button
-                        className="text-green-600 hover:underline"
-                        onClick={() => navigate(`/deliveries/${customer.CustomerID}`)}
-                      >View Deliveries</button>
+                      {customer.hasDeliveries && (
+                        <button
+                          className="text-green-600 hover:underline"
+                          onClick={() => navigate(`/deliveries/${customer.CustomerID}`)}
+                        >View Deliveries</button>
+                      )}
                     </td>
                   </tr>
                 ))}

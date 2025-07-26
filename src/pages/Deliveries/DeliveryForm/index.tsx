@@ -267,8 +267,8 @@ const DeliveryFormPage: React.FC = () => {
         toast.success("Delivery created successfully");
       }
 
-      // Navigate back to deliveries list
-      navigate("/deliveries");
+      // Navigate back to previous page
+      navigate(-1);
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : "Failed to save delivery";
@@ -279,7 +279,7 @@ const DeliveryFormPage: React.FC = () => {
   };
 
   const handleCancel = () => {
-    navigate("/deliveries");
+    navigate(-1);
   };
 
   if (loading && isEditMode) {
@@ -385,9 +385,6 @@ const DeliveryFormPage: React.FC = () => {
                 form.deliveryDetails
                   .filter((detail) => !detail.isDeleted)
                   .map((detail: DeliveryDetailForm, idx: number) => {
-                    const product = products.find(
-                      (p) => p.productID === detail.productID
-                    );
                     const today = new Date().toISOString().split("T")[0];
                     return (
                                              <div
