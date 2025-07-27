@@ -37,7 +37,7 @@ const CustomersPage: React.FC = () => {
     try {
       const response = await fetch(`https://localhost:7136/odata/Deliveries?$filter=customerID eq ${customerId}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
       });
       const data = await response.json();

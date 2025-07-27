@@ -34,7 +34,7 @@ export interface CreateDeliveryPayload {
 }
 
 function getToken() {
-  return localStorage.getItem('token');
+  return localStorage.getItem('accessToken');
 }
 
 export async function getDeliveriesByCustomer(customerId: number | string) {

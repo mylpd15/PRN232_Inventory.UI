@@ -27,7 +27,7 @@ const DeliveriesPage: React.FC = () => {
         // Fetch all deliveries
         const res = await fetch('https://localhost:7136/odata/Deliveries', {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
         });
         data = await res.json();

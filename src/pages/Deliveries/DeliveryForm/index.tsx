@@ -61,7 +61,7 @@ const DeliveryFormPage: React.FC = () => {
     // Fetch products for dropdown
     fetch("https://localhost:7136/odata/Products", {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
     })
       .then((res) => res.json())
@@ -72,9 +72,10 @@ const DeliveryFormPage: React.FC = () => {
       .catch(() => setProducts([]));
 
     // Fetch customers for dropdown
+   
     fetch("https://localhost:7136/odata/Customers", {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
     })
       .then((res) => res.json())
@@ -354,6 +355,7 @@ const DeliveryFormPage: React.FC = () => {
                 <option value="1">Shipped</option>
                 <option value="2">Delivered</option>
                 <option value="3">Cancelled</option>
+                <option value="4">Requested</option>
               </select>
             </div>
           )}
