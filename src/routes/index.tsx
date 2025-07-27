@@ -4,6 +4,7 @@ import authRoutes from "./Auth";
 import { Intro } from "../pages/Intro";
 import userRoutes from "./Users";
 import ProtectedRoute from "./ProtectedRoute";
+import { CustomersPage, DeliveriesPage, DeliveryFormPage } from '../pages';
 
 const Route = () => {
   const routes = useRoutes([
@@ -18,6 +19,26 @@ const Route = () => {
         {
           path: "demo",
           element: <Intro />,
+        },
+        {
+          path: "/customers",
+          element: <CustomersPage />,
+        },
+        {
+          path: "/deliveries",
+          element: <DeliveriesPage />,
+        },
+        {
+          path: "/deliveries/:customerId",
+          element: <DeliveriesPage />,
+        },
+        {
+          path: "/deliveries/add",
+          element: <DeliveryFormPage />,
+        },
+        {
+          path: "/deliveries/edit/:deliveryId",
+          element: <DeliveryFormPage />,
         },
       ],
     },

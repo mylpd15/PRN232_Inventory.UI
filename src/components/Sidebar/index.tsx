@@ -8,6 +8,8 @@ const menu = [
   { label: 'Inventory', path: '/inventory', icon: '📊' },
   { label: 'Purchase order', path: '/purchase-order', icon: '📝' },
   { label: 'Report', path: '/report', icon: '📈' },
+  { label: 'Customers', path: '/customers', icon: '👤' },
+  { label: 'Deliveries', path: '/deliveries', icon: '🚚' },
   { label: 'Integration', path: '/integration', icon: '🔗' },
   { label: 'Settings', path: '/settings', icon: '⚙️' },
   { label: 'Users', path: '/users', icon: '👥' },
