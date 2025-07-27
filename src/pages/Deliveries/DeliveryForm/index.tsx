@@ -12,6 +12,7 @@ import {
   CreateDeliveryPayload,
 } from "../../../services/DeliveryService";
 import { toast } from "react-hot-toast";
+import { UserRole } from "../../../common/enums";
 
 interface Product {
   ProductID: number;
@@ -21,6 +22,16 @@ interface Product {
 interface CustomerOption {
   CustomerID: number;
   CustomerName: string;
+}
+
+interface User {
+  $id: string;
+  id: string;
+  displayName: string;
+  username: string;
+  email: string | null;
+  isDisabled: boolean;
+  userRole: number;
 }
 
 interface DeliveryDetailForm {
@@ -56,6 +67,26 @@ const DeliveryFormPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [customers, setCustomers] = useState<CustomerOption[]>([]);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+  // Get current user from localStorage
+  useEffect(() => {
+    const userJson = localStorage.getItem('user');
+    if (userJson) {
+      try {
+        const user = JSON.parse(userJson) as User;
+        setCurrentUser(user);
+      } catch (error) {
+        console.error('Error parsing user from localStorage:', error);
+      }
+    }
+  }, []);
+
+  // Check if user has admin or warehouse manager role
+  const canEditStatus = currentUser && (currentUser.userRole === UserRole.Admin || currentUser.userRole === UserRole.WarehouseManager);
+
+  // Check if status field should be disabled
+  const isStatusDisabled = isEditMode && form.Status === 0 && !canEditStatus;
 
   useEffect(() => {
     // Fetch products for dropdown
@@ -345,10 +376,13 @@ const DeliveryFormPage: React.FC = () => {
             <div className="mb-6">
               <label className="block mb-2 font-medium">Status</label>
               <select
-                className="w-full border px-3 py-2 rounded max-w-xs"
+                className={`w-full border px-3 py-2 rounded max-w-xs ${
+                  isStatusDisabled ? 'bg-gray-100 cursor-not-allowed' : ''
+                }`}
                 name="Status"
                 value={form.Status}
                 onChange={handleChange}
+                disabled={isStatusDisabled}
               >
                 <option value="">Select Status</option>
                 <option value="0">Pending</option>
@@ -357,6 +391,11 @@ const DeliveryFormPage: React.FC = () => {
                 <option value="3">Cancelled</option>
                 <option value="4">Requested</option>
               </select>
+              {isStatusDisabled && (
+                <p className="text-sm text-gray-600 mt-1">
+                  Only Admin and Warehouse Manager can change status when delivery is pending
+                </p>
+              )}
             </div>
           )}
 

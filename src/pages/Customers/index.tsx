@@ -9,9 +9,21 @@ import {
 } from '../../services/CustomerService';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { Search, Edit, Trash, Eye } from 'lucide-react';
+import { UserRole } from '../../common/enums';
 
 interface CustomerWithDeliveries extends Customer {
   hasDeliveries?: boolean;
+}
+
+interface User {
+  $id: string;
+  id: string;
+  displayName: string;
+  username: string;
+  email: string | null;
+  isDisabled: boolean;
+  userRole: number;
 }
 
 const defaultForm: Omit<Customer, 'customerID'> = {
@@ -21,17 +33,34 @@ const defaultForm: Omit<Customer, 'customerID'> = {
 
 const CustomersPage: React.FC = () => {
   const [customers, setCustomers] = useState<CustomerWithDeliveries[]>([]);
+  const [allCustomers, setAllCustomers] = useState<CustomerWithDeliveries[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editCustomer, setEditCustomer] = useState<Customer | null>(null);
   const [form, setForm] = useState(defaultForm);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteCustomerId, setDeleteCustomerId] = useState<number | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-  const totalPages = Math.ceil(customers.length / itemsPerPage);
-  const paginatedCustomers = customers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  // Get current user from localStorage
+  useEffect(() => {
+    const userJson = localStorage.getItem('user');
+    if (userJson) {
+      try {
+        const user = JSON.parse(userJson) as User;
+        setCurrentUser(user);
+      } catch (error) {
+        console.error('Error parsing user from localStorage:', error);
+      }
+    }
+  }, []);
+
+  // Check if user has admin role
+  const isAdmin = currentUser && currentUser.userRole === UserRole.Admin;
 
   const checkCustomerDeliveries = async (customerId: number): Promise<boolean> => {
     try {
@@ -62,17 +91,36 @@ const CustomersPage: React.FC = () => {
           })
         );
         
+        setAllCustomers(customersWithDeliveries);
         setCustomers(customersWithDeliveries);
       } else {
         setCustomers([]);
+        setAllCustomers([]);
       }
     } catch (error) {
       setCustomers([]);
+      setAllCustomers([]);
       toast.error('Failed to fetch customers');
     } finally {
       setLoading(false);
     }
   };
+
+  // Filter customers based on search term
+  useEffect(() => {
+    let filtered = allCustomers;
+
+    if (searchTerm) {
+      filtered = filtered.filter(customer => 
+        customer.CustomerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        customer.CustomerAddress?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        customer.CustomerID?.toString().includes(searchTerm)
+      );
+    }
+
+    setCustomers(filtered);
+    setCurrentPage(1); // Reset to first page when filtering
+  }, [searchTerm, allCustomers]);
 
   useEffect(() => {
     fetchCustomers();
@@ -135,86 +183,151 @@ const CustomersPage: React.FC = () => {
     }
   };
 
+  const clearSearch = () => {
+    setSearchTerm('');
+  };
+
+  const totalPages = Math.ceil(customers.length / itemsPerPage);
+  const paginatedCustomers = customers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   return (
     <MainLayout>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Customers</h1>
-        <button
-          className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
-          onClick={handleAdd}
-        >
-          Add Customer
-        </button>
+        {isAdmin && (
+          <button
+            className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
+            onClick={handleAdd}
+          >
+            Add Customer
+          </button>
+        )}
       </div>
+
+      {/* Search Bar */}
+      <div className="bg-white p-4 rounded shadow mb-6">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+          <input
+            type="text"
+            placeholder="Search by customer name, address, or ID..."
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          {searchTerm && (
+            <button
+              onClick={clearSearch}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+      </div>
+
       {loading ? (
         <div className="text-center py-10">Loading customers...</div>
       ) : (
         <>
-          <div className="flex justify-center w-full">
-            <table className="w-full min-w-full bg-white rounded shadow my-4">
-              <thead>
-                <tr>
-                  <th className="py-2 px-4 border-b text-center">ID</th>
-                  <th className="py-2 px-4 border-b text-center">Name</th>
-                  <th className="py-2 px-4 border-b text-center">Address</th>
-                  <th className="py-2 px-4 border-b text-center">Created Date</th>
-                  <th className="py-2 px-4 border-b text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedCustomers.map((customer) => (
-                  <tr key={customer.CustomerID}>
-                    <td className="py-2 px-4 border-b text-center">{customer.CustomerID}</td>
-                    <td className="py-2 px-4 border-b text-center">{customer.CustomerName}</td>
-                    <td className="py-2 px-4 border-b text-center">{customer.CustomerAddress}</td>
-                    <td className="py-2 px-4 border-b text-center">{customer.CreatedDate ? new Date(customer.CreatedDate).toLocaleString() : ''}</td>
-                    <td className="py-2 px-4 border-b flex gap-2 justify-center text-center">
-                      <button
-                        className="text-blue-500 hover:underline mr-2"
-                        onClick={() => handleEdit(customer)}
-                      >Edit</button>
-                      <button
-                        className="text-red-500 hover:underline mr-2"
-                        onClick={() => handleDelete(customer.CustomerID!)}
-                      >Delete</button>
-                      {customer.hasDeliveries && (
-                        <button
-                          className="text-green-600 hover:underline"
-                          onClick={() => navigate(`/deliveries/${customer.CustomerID}`)}
-                        >View Deliveries</button>
-                      )}
-                    </td>
+          {paginatedCustomers.length === 0 ? (
+            <div className="text-center py-10">
+              <div className="text-gray-500 text-lg mb-2">
+                {searchTerm 
+                  ? "No customers found matching your search criteria" 
+                  : "No customers found"}
+              </div>
+              <div className="text-gray-400 text-sm">
+                {searchTerm 
+                  ? "Try adjusting your search terms" 
+                  : isAdmin ? "Get started by adding a new customer" : "No customers available"}
+              </div>
+            </div>
+          ) : (
+            <div className="flex justify-center w-full">
+              <table className="w-full min-w-full bg-white rounded shadow my-4">
+                <thead>
+                  <tr>
+                    <th className="py-2 px-4 border-b text-center">ID</th>
+                    <th className="py-2 px-4 border-b text-center">Name</th>
+                    <th className="py-2 px-4 border-b text-center">Address</th>
+                    <th className="py-2 px-4 border-b text-center">Created Date</th>
+                    <th className="py-2 px-4 border-b text-left">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          {/* Pagination Controls */}
-          <div className="flex justify-center my-4 gap-2">
-            <button
-              className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              disabled={currentPage === 1}
-            >
-              Prev
-            </button>
-            {Array.from({ length: totalPages }, (_, i) => (
+                </thead>
+                <tbody>
+                  {paginatedCustomers.map((customer) => (
+                    <tr key={customer.CustomerID}>
+                      <td className="py-2 px-4 border-b text-center">{customer.CustomerID}</td>
+                      <td className="py-2 px-4 border-b text-center">{customer.CustomerName}</td>
+                      <td className="py-2 px-4 border-b text-center">{customer.CustomerAddress}</td>
+                      <td className="py-2 px-4 border-b text-center">{customer.CreatedDate ? new Date(customer.CreatedDate).toLocaleString() : ''}</td>
+                      <td className="py-2 px-4 border-b text-left">
+                        <div className="flex gap-2">
+                          {isAdmin && (
+                            <>
+                              <button
+                                className="text-blue-500 hover:underline flex items-center gap-1"
+                                onClick={() => handleEdit(customer)}
+                              >
+                                <Edit size={16} />
+                                Edit
+                              </button>
+                              <button
+                                className="text-red-500 hover:underline flex items-center gap-1"
+                                onClick={() => handleDelete(customer.CustomerID!)}
+                              >
+                                <Trash size={16} />
+                                Delete
+                              </button>
+                            </>
+                          )}
+                          {customer.hasDeliveries && (
+                            <button
+                              className="text-green-600 hover:underline flex items-center gap-1"
+                              onClick={() => navigate(`/deliveries/${customer.CustomerID}`)}
+                            >
+                              <Eye size={16} />
+                              View Deliveries
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          
+          {/* Pagination Controls - only show when there are results */}
+          {paginatedCustomers.length > 0 && totalPages > 1 && (
+            <div className="flex justify-center my-4 gap-2">
               <button
-                key={i + 1}
-                className={`px-3 py-1 rounded ${currentPage === i + 1 ? 'bg-yellow-500 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
-                onClick={() => setCurrentPage(i + 1)}
+                className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
               >
-                {i + 1}
+                Prev
               </button>
-            ))}
-            <button
-              className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </button>
-          </div>
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i + 1}
+                  className={`px-3 py-1 rounded ${currentPage === i + 1 ? 'bg-yellow-500 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
+                  onClick={() => setCurrentPage(i + 1)}
+                >
+                  {i + 1}
+                </button>
+              ))}
+              <button
+                className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </div>
+          )}
         </>
       )}
       {/* Add/Edit Modal */}
