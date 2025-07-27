@@ -1,6 +1,6 @@
 const API_BASE = `${import.meta.env.VITE_SERVER_URL}/odata/Customers`;
 function getToken() {
-  return localStorage.getItem('token');
+  return localStorage.getItem('accessToken');
 }
 
 export async function getCustomers(top = 5) {
