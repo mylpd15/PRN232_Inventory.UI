@@ -47,6 +47,10 @@ const Route = () => {
       path: "*",
       element: <NotFound />,
     },
+    {
+      path: "demo",
+      element: <Intro />,
+    },
   ]);
 
   return routes;

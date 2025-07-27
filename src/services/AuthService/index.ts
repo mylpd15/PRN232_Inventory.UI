@@ -98,4 +98,40 @@ export const AuthService = {
       dto
     );
   },
+  oneTimeLogin: async (token: string) => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_SERVER_URL}/api/Auth/one-time-login?token=${token}`,
+
+    );
+
+    localStorage.setItem("accessToken", response.data.accessToken.accessToken);
+    localStorage.setItem("user", JSON.stringify(response.data.appUser));
+
+    return {
+      accessToken: response.data.accessToken.accessToken,
+      user: response.data.appUser,
+    };
+  },
+  getProfile: async (): Promise<AppUser | null> => {
+    try {
+      const accessToken = AuthService.getAccessToken();
+      if (!accessToken) return null;
+
+      const response = await axios.get(
+        `${import.meta.env.VITE_SERVER_URL}/api/Auth/me`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      const user: AppUser = response.data;
+      localStorage.setItem("user", JSON.stringify(user));
+      return user;
+    } catch (error) {
+      console.error("Failed to fetch profile:", error);
+      return null;
+    }
+  },
 };

@@ -14,8 +14,8 @@ import {
 import { toast } from "react-hot-toast";
 
 interface Product {
-  productID: number;
-  productName: string;
+  ProductID: number;
+  ProductName: string;
 }
 
 interface CustomerOption {
@@ -66,7 +66,7 @@ const DeliveryFormPage: React.FC = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        const productsArray = data.$values || (Array.isArray(data) ? data : []);
+        const productsArray = data.value || (Array.isArray(data) ? data : []);
         setProducts(productsArray);
       })
       .catch(() => setProducts([]));
@@ -415,8 +415,8 @@ const DeliveryFormPage: React.FC = () => {
                              >
                                <option value="">Select Product</option>
                                {products.map((p) => (
-                                 <option key={p.productID} value={p.productID}>
-                                   {p.productName}
+                                 <option key={p.ProductID} value={p.ProductID}>
+                                   {p.ProductName}
                                  </option>
                                ))}
                              </select>

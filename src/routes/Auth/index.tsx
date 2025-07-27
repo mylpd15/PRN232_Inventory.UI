@@ -1,4 +1,5 @@
-import { ChangePassword, ForgetPassword, Login, Signup,VerifyOTP } from "../../pages";
+import { ChangePassword, ChangePasswordPage, ForgetPassword, Login, Signup,UserProfile,VerifyOTP } from "../../pages";
+import OneTimeLoginPage from "../../pages/Auth/OneTimeLogin";
 import { SendOTP } from "../../pages/Auth/SendOTP";
 
 const authRoutes = [
@@ -25,6 +26,18 @@ const authRoutes = [
   {
     path:"/auth/VerifyOTP",
     element:<VerifyOTP />
+  },
+  {
+    path:"/auth/one-time-login",
+    element:<OneTimeLoginPage />
+  },
+   {
+    path:"/auth/change-initial-password",
+    element:<ChangePasswordPage />
+  },
+  {
+    path:"/auth/profile",
+    element:<UserProfile />
   }
 ];
 
