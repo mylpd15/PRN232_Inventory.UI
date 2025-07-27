@@ -9,6 +9,8 @@ import {
   ChevronDown,
   ChevronRight,
   ClipboardList,
+  UserRound,
+  Truck,
 } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
@@ -33,6 +35,8 @@ const menu = [
   },
   { label: 'Purchase Orders', path: '/purchase-order', icon: ClipboardList },
   { label: 'Reports', path: '/report', icon: BarChart2 },
+  { label: 'Customers', path: '/customers', icon: UserRound },
+  { label: 'Deliveries', path: '/deliveries', icon: Truck },
   { label: 'Integrations', path: '/integration', icon: Link2 },
   { label: 'Settings', path: '/settings', icon: Settings },
   { label: 'Users', path: '/users', icon: Users },
@@ -77,9 +81,8 @@ export default function Sidebar() {
                 )}
               </button>
               <div
-                className={`ml-8 overflow-hidden transition-all duration-300 ease-in-out ${
-                  openMenus.includes(item.label) ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
-                }`}
+                className={`ml-8 overflow-hidden transition-all duration-300 ease-in-out ${openMenus.includes(item.label) ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
+                  }`}
               >
                 {item.children.map((child) => (
                   <Link
