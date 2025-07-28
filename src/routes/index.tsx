@@ -1,5 +1,5 @@
 import { useRoutes } from "react-router-dom";
-import { Home, NotFound } from "../pages";
+import { Home, LocationPage, NotFound, WarehousePage } from "../pages";
 import authRoutes from "./Auth";
 import { Intro } from "../pages/Intro";
 import userRoutes from "./Users";
@@ -7,6 +7,10 @@ import ProtectedRoute from "./ProtectedRoute";
 import { CustomersPage, DeliveriesPage, DeliveryFormPage } from "../pages";
 import OrdersRoute from "./Orders";
 import ReportsPage from "../pages/Reports";
+import { InventoriesPage } from "../pages/Inventories";
+import { ProductsPage } from "../pages/Products";
+
+
 
 const Route = () => {
   const routes = useRoutes([
@@ -27,8 +31,24 @@ const Route = () => {
           element: <Intro />,
         },
         {
+          path: "/locations",
+          element: <LocationPage />,
+        },
+        {
+          path: "/warehouses",
+          element: <WarehousePage />,
+        },
+        {
           path: "/customers",
           element: <CustomersPage />,
+        },
+        {
+          path: "/inventories",
+          element: <InventoriesPage />,
+        },
+                {
+          path: "/products",
+          element: <ProductsPage />,
         },
         {
           path: "/deliveries",
@@ -46,10 +66,12 @@ const Route = () => {
           path: "/deliveries/edit/:deliveryId",
           element: <DeliveryFormPage />,
         },
+
         {
           path: "/orders/*", // note the *
           element: <OrdersRoute />,
         },
+
 
         {
           path: "/report",
