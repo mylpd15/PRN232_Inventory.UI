@@ -1,10 +1,6 @@
-import { useEffect, useState } from "react";
 import { Header } from "../../layouts";
 
 export function Intro() {
-
-  const [open, setOpen] = useState(false);
-
 
   return (
     <>
