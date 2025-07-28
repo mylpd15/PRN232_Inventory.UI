@@ -52,6 +52,7 @@ export default function Sidebar() {
     );
   };
 
+  
   const isActive = (path: string) =>
     location.pathname === path || location.pathname.startsWith(path + '/');
 
