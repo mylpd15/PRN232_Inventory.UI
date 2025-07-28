@@ -30,8 +30,9 @@ const menu = [
     label: "Inventory",
     icon: Package,
     children: [
-      { label: "All Items", path: "/inventory" },
-      { label: "Stock Adjustments", path: "/inventory/adjustments" },
+      { label: 'Inventories', path: '/inventories' },
+      { label: 'Products', path: '/products' },
+
     ],
   },
   {
@@ -40,6 +41,14 @@ const menu = [
     children: [
       { label: "Orders", path: "/sales" },
       { label: "Invoices", path: "/sales/invoices" },
+    ],
+  },
+  {
+    label: 'Warehouse',
+    icon: Warehouse,
+    children: [
+      { label: 'Location', path: '/locations' },
+      { label: 'Warehouse', path: '/warehouses' },
     ],
   },
   { label: 'Purchase Orders', path: '/purchase-order', icon: ClipboardList },
