@@ -1,8 +1,5 @@
-import axios from 'axios';
-
 const API_BASE = `${import.meta.env.VITE_SERVER_URL}/odata/Orders`;
 const API_ORDERS = `${import.meta.env.VITE_SERVER_URL}/api/Orders`; // For status updates
-const ORDER_DETAILS_API = `${import.meta.env.VITE_SERVER_URL}/odata/OrderDetails`;
 const PROVIDERS_API = `${import.meta.env.VITE_SERVER_URL}/odata/Providers`;
 const WAREHOUSES_API = `${import.meta.env.VITE_SERVER_URL}/odata/Warehouses`;
 const PRODUCTS_API = `${import.meta.env.VITE_SERVER_URL}/odata/Products`;
@@ -52,7 +49,9 @@ export async function createOrder(orderData: CreateOrderDto) {
     try {
       const errorJson = JSON.parse(errorText);
       errorMsg = errorJson.message || errorMsg;
-    } catch {}
+    } catch {
+      // Ignore JSON parse errors, use original error text
+    }
     throw new Error(errorMsg || `Failed to create order: ${res.status}`);
   }
   return res.json();
@@ -132,7 +131,9 @@ export async function updateOrder(orderId: number, orderData: UpdateOrderDto) {
     try {
       const errorJson = JSON.parse(errorText);
       errorMsg = errorJson.message || errorMsg;
-    } catch {}
+    } catch {
+      // Ignore JSON parse errors, use original error text
+    }
     throw new Error(errorMsg || `Failed to update order: ${res.status}`);
   }
   return res.json();
@@ -171,4 +172,4 @@ export async function getProducts() {
 }
 
 
-export * from './index'; 
+ 
