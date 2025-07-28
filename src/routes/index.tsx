@@ -4,7 +4,9 @@ import authRoutes from "./Auth";
 import { Intro } from "../pages/Intro";
 import userRoutes from "./Users";
 import ProtectedRoute from "./ProtectedRoute";
-import { CustomersPage, DeliveriesPage, DeliveryFormPage } from '../pages';
+import { CustomersPage, DeliveriesPage, DeliveryFormPage } from "../pages";
+import OrdersRoute from "./Orders";
+import OrderDetailsPage from "../pages/Orders/OrderDetailsPage";
 
 const Route = () => {
   const routes = useRoutes([
@@ -39,6 +41,10 @@ const Route = () => {
         {
           path: "/deliveries/edit/:deliveryId",
           element: <DeliveryFormPage />,
+        },
+        {
+          path: "/orders/*", // note the *
+          element: <OrdersRoute />,
         },
       ],
     },
