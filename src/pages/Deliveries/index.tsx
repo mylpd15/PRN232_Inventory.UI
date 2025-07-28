@@ -7,7 +7,7 @@ import {
   Delivery,
 } from '../../services/DeliveryService';
 import { toast } from 'react-hot-toast';
-import { Check, X, Edit, Search } from 'lucide-react';
+import { Check, X, Eye, Search } from 'lucide-react';
 import { UserRole } from '../../common/enums';
 
 interface User {
@@ -368,8 +368,8 @@ const DeliveriesPage: React.FC = () => {
                             className="text-blue-500 hover:underline flex items-center gap-1"
                             onClick={() => handleEdit(delivery)}
                           >
-                            <Edit size={16} />
-                            Edit
+                            <Eye size={16} />
+                            View
                           </button>
                           
                           {/* Show Approve/Unapprove buttons only for Admin/WarehouseManager when status is Pending */}
