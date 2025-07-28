@@ -9,9 +9,10 @@ import {
   ClipboardList,
   UserRound,
   Truck,
-} from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+  Turtle,
+} from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { UserRole } from '../../common/enums/AppUser/UserRole';
 
 interface User {
@@ -25,21 +26,21 @@ interface User {
 }
 
 const menu = [
-  { label: 'Dashboard', path: '/overview', icon: LayoutDashboard },
+  { label: "Dashboard", path: "/overview", icon: LayoutDashboard },
   {
-    label: 'Inventory',
+    label: "Inventory",
     icon: Package,
     children: [
-      { label: 'All Items', path: '/inventory' },
-      { label: 'Stock Adjustments', path: '/inventory/adjustments' },
+      { label: "All Items", path: "/inventory" },
+      { label: "Stock Adjustments", path: "/inventory/adjustments" },
     ],
   },
   {
-    label: 'Sales',
+    label: "Sales",
     icon: ShoppingCart,
     children: [
-      { label: 'Orders', path: '/sales' },
-      { label: 'Invoices', path: '/sales/invoices' },
+      { label: "Orders", path: "/sales" },
+      { label: "Invoices", path: "/sales/invoices" },
     ],
   },
   { label: 'Purchase Orders', path: '/purchase-order', icon: ClipboardList },
@@ -149,7 +150,7 @@ export default function Sidebar() {
                   ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 <div className="flex items-center gap-3">
-                  <Icon size={18} color={isGroupActive ? '#fff' : '#ccc'} />
+                  <Icon size={18} color={isGroupActive ? "#fff" : "#ccc"} />
                   <span>{item.label}</span>
                 </div>
                 {openMenus.includes(item.label) ? (
@@ -159,17 +160,22 @@ export default function Sidebar() {
                 )}
               </button>
               <div
-                className={`ml-8 overflow-hidden transition-all duration-300 ease-in-out ${openMenus.includes(item.label) ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
-                  }`}
+                className={`ml-8 overflow-hidden transition-all duration-300 ease-in-out ${
+                  openMenus.includes(item.label)
+                    ? "max-h-40 opacity-100"
+                    : "max-h-0 opacity-0"
+                }`}
               >
                 {item.children.map((child) => (
                   <Link
                     key={child.path}
                     to={child.path}
                     className={`block text-sm px-3 py-1 rounded-md transition-all duration-200
-                      ${isActive(child.path)
-                        ? 'bg-yellow-300 text-white font-semibold'
-                        : 'text-gray-300 hover:bg-[#2A2A2A]'}`}
+                      ${
+                        isActive(child.path)
+                          ? "bg-yellow-300 text-white font-semibold"
+                          : "text-gray-300 hover:bg-[#2A2A2A]"
+                      }`}
                   >
                     {child.label}
                   </Link>
@@ -186,7 +192,10 @@ export default function Sidebar() {
                   : 'text-gray-300 hover:bg-[#2A2A2A]'}
                 ${isDisabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
             >
-              <item.icon size={18} color={isActive(item.path) ? '#fff' : '#ccc'} />
+              <item.icon
+                size={18}
+                color={isActive(item.path) ? "#fff" : "#ccc"}
+              />
               <span>{item.label}</span>
             </Link>
           );
