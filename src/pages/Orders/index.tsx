@@ -51,7 +51,7 @@ interface Product {
 
 const OrdersPage: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
+  // const [products, setProducts] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -67,7 +67,6 @@ const OrdersPage: React.FC = () => {
         getOrders(),
         getProducts(),
       ]);
-      setProducts(productData);
 
       // Compute total amount for each order
       const ordersWithTotal = orderData.map((order: Order) => ({
@@ -79,8 +78,9 @@ const OrdersPage: React.FC = () => {
       }));
 
       setOrders(ordersWithTotal);
-    } catch (err: any) {
-      toast.error(err?.message || "Không thể tải dữ liệu đơn hàng");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Không thể tải dữ liệu đơn hàng";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -117,8 +117,9 @@ const OrdersPage: React.FC = () => {
       await deleteOrder(orderId);
       toast.success(`Đã xóa đơn hàng #${orderId}`);
       fetchData();
-    } catch (err: any) {
-      toast.error(err?.message || "Xóa đơn hàng thất bại");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Xóa đơn hàng thất bại";
+      toast.error(errorMessage);
     }
   };
 

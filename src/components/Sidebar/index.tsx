@@ -9,8 +9,6 @@ import {
   ClipboardList,
   UserRound,
   Truck,
-  Warehouse,
-  Turtle,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -117,7 +115,7 @@ export default function Sidebar() {
 
       // Auditor (7) - can view all but view only
       if (userRole === UserRole.Auditor) {
-        return ['Dashboard', 'Customers', 'Deliveries', 'Inventory', 'Sales'].includes(item.label);
+        return ['Dashboard', 'Customers', 'Deliveries', 'Inventory', 'Sales', 'Reports'].includes(item.label);
       }
 
       return false;
@@ -202,7 +200,7 @@ export default function Sidebar() {
                   : 'text-gray-300 hover:bg-[#2A2A2A]'}
                 ${isDisabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
             >
-              <item.icon
+              <Icon
                 size={18}
                 color={isActive(item.path) ? "#fff" : "#ccc"}
               />
