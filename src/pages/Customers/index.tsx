@@ -80,9 +80,7 @@ const CustomersPage: React.FC = () => {
     setLoading(true);
     try {
       const data = await getCustomers(20);
-      if (data && Array.isArray(data.value)) {
-        console.log(data.value);
-        
+      if (data && Array.isArray(data.value)) {        
         // Check deliveries for each customer
         const customersWithDeliveries = await Promise.all(
           data.value.map(async (customer: CustomerWithDeliveries) => {

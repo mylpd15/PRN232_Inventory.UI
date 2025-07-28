@@ -586,18 +586,21 @@ const DeliveryFormPage: React.FC = () => {
                     {form.Status === 3 ? "Cannot edit cancelled delivery" : "Can only edit when status is Pending"}
                   </div>
                 )}
-                <button
-                  type="button"
-                  className={`px-3 py-1 rounded text-white ${
-                    isEditMode && form.Status !== 0 
-                      ? 'bg-gray-400 cursor-not-allowed' 
-                      : 'bg-yellow-500 hover:bg-yellow-600'
-                  }`}
-                  onClick={handleAddDetail}
-                  disabled={isEditMode && form.Status !== 0}
-                >
-                  + Add Detail
-                </button>
+                {/* Only show Add Detail button for Admin or WarehouseManager, or if not in edit mode */}
+                {(canEditStatus || !isEditMode) && (
+                  <button
+                    type="button"
+                    className={`px-3 py-1 rounded text-white ${
+                      isEditMode && form.Status !== 0 
+                        ? 'bg-gray-400 cursor-not-allowed' 
+                        : 'bg-yellow-500 hover:bg-yellow-600'
+                    }`}
+                    onClick={handleAddDetail}
+                    disabled={isEditMode && form.Status !== 0}
+                  >
+                    + Add Detail
+                  </button>
+                )}
               </div>
             </div>
 
@@ -695,21 +698,24 @@ const DeliveryFormPage: React.FC = () => {
                                disabled={isEditMode && form.Status !== 0}
                              />
                            </div>
-                           <div className="flex items-end">
-                             <button
-                               type="button"
-                               className={`px-3 py-2 border rounded ${
-                                 isEditMode && form.Status !== 0 
-                                   ? 'text-gray-400 bg-gray-100 cursor-not-allowed' 
-                                   : 'text-red-500 hover:text-red-700 hover:bg-red-50'
-                               }`}
-                               onClick={() => handleRemoveDetail(idx)}
-                               title="Remove"
-                               disabled={isEditMode && form.Status !== 0}
-                             >
-                               ✕
-                             </button>
-                           </div>
+                           {/* Only show remove button for Admin or WarehouseManager, or if not in edit mode */}
+                           {(canEditStatus || !isEditMode) && (
+                             <div className="flex items-end">
+                               <button
+                                 type="button"
+                                 className={`px-3 py-2 border rounded ${
+                                   isEditMode && form.Status !== 0 
+                                     ? 'text-gray-400 bg-gray-100 cursor-not-allowed' 
+                                     : 'text-red-500 hover:text-red-700 hover:bg-red-50'
+                                 }`}
+                                 onClick={() => handleRemoveDetail(idx)}
+                                 title="Remove"
+                                 disabled={isEditMode && form.Status !== 0}
+                               >
+                                 ✕
+                               </button>
+                             </div>
+                           )}
                          </div>
                          {detail.productID > 0 && detail.deliveryQuantity > 0 && (
                            <div className="mt-2 text-sm text-gray-600">
@@ -723,24 +729,29 @@ const DeliveryFormPage: React.FC = () => {
           </div>
 
           <div className="flex justify-end gap-4">
-            <button
-              type="button"
-              className="px-6 py-2 rounded bg-gray-200 hover:bg-gray-300"
-              onClick={handleCancel}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-6 py-2 rounded bg-yellow-500 text-white hover:bg-yellow-600 disabled:opacity-50"
-              disabled={loading}
-            >
-              {loading
-                ? "Saving..."
-                : isEditMode
-                ? "Update Delivery"
-                : "Create Delivery"}
-            </button>
+            {/* Only show buttons for Admin or WarehouseManager, or if not in edit mode */}
+            {(canEditStatus || !isEditMode) && (
+              <>
+                <button
+                  type="button"
+                  className="px-6 py-2 rounded bg-gray-200 hover:bg-gray-300"
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2 rounded bg-yellow-500 text-white hover:bg-yellow-600 disabled:opacity-50"
+                  disabled={loading || (isEditMode && form.Status !== 0)}
+                >
+                  {loading
+                    ? "Saving..."
+                    : isEditMode
+                    ? "Update Delivery"
+                    : "Create Delivery"}
+                </button>
+              </>
+            )}
           </div>
         </form>
       </div>
