@@ -97,7 +97,7 @@ const DeliveryFormPage: React.FC = () => {
 
   useEffect(() => {
     // Fetch products for dropdown
-    fetch("https://localhost:7136/api/Products", {
+    fetch(`${import.meta.env.VITE_SERVER_URL}/api/Products`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
@@ -125,7 +125,7 @@ const DeliveryFormPage: React.FC = () => {
         console.error('Error fetching products from API endpoint:', error);
         
         // Fallback to OData endpoint
-        fetch("https://localhost:7136/odata/Products", {
+        fetch(`${import.meta.env.VITE_SERVER_URL}/odata/Products`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
