@@ -5,15 +5,34 @@ function getToken() {
   return localStorage.getItem('accessToken');
 }
 
-export async function getWarehouses(top = 5) {
-  const res = await fetch(`${API_BASE}?$top=${top}`, {
+export async function getWarehouses({
+  search = "",
+  skip = 0,
+  top = 5,
+}: {
+  search?: string;
+  skip?: number;
+  top?: number;
+}) {
+  let url = `${API_BASE}?$count=true&$skip=${skip}&$top=${top}`;
+
+  if (search) {
+    url += `&$filter=contains(tolower(warehouseName), '${search.toLowerCase()}')`;
+  }
+
+  const res = await fetch(url, {
     headers: {
       Authorization: `Bearer ${getToken()}`,
     },
   });
+
+  if (!res.ok) throw new Error("Failed to fetch warehouses");
+
   const data = await res.json();
   return data;
 }
+
+
 
 export async function createWarehouse(data: Warehouse) {
   const res = await fetch(API_BASE, {

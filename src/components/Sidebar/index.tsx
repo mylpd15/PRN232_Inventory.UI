@@ -38,8 +38,8 @@ const menu = [
     label: 'Warehouse',
     icon: Warehouse,
     children: [
-      { label: 'Location', path: '/inventory' },
-      { label: 'Warehouse', path: '/inventory/adjustments' },
+      { label: 'Location', path: '/locations' },
+      { label: 'Warehouse', path: '/warehouses' },
     ],
   },
   { label: 'Purchase Orders', path: '/purchase-order', icon: ClipboardList },

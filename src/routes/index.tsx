@@ -1,5 +1,5 @@
 import { useRoutes } from "react-router-dom";
-import { Home, NotFound } from "../pages";
+import { Home, LocationPage, NotFound, WarehousePage } from "../pages";
 import authRoutes from "./Auth";
 import { Intro } from "../pages/Intro";
 import userRoutes from "./Users";
@@ -19,6 +19,14 @@ const Route = () => {
         {
           path: "demo",
           element: <Intro />,
+        },
+        {
+          path: "/locations",
+          element: <LocationPage />,
+        },
+        {
+          path: "/warehouses",
+          element: <WarehousePage />,
         },
         {
           path: "/customers",
