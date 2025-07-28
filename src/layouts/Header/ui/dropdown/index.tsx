@@ -1,10 +1,6 @@
-import { Fragment, useState } from 'react';
 import { Menu, Transition,MenuButton,MenuItems,MenuItem } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 
-interface DropdownProps {
-  options: string[];
-}
 function classNames(...classes: string[]): string {
     return classes.filter(Boolean).join(' ');
   }
