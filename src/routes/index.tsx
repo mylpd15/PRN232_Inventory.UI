@@ -4,7 +4,8 @@ import authRoutes from "./Auth";
 import { Intro } from "../pages/Intro";
 import userRoutes from "./Users";
 import ProtectedRoute from "./ProtectedRoute";
-import { CustomersPage, DeliveriesPage, DeliveryFormPage } from '../pages';
+import { CustomersPage, DeliveriesPage, DeliveryFormPage } from "../pages";
+import OrdersRoute from "./Orders";
 import ReportsPage from "../pages/Reports";
 
 const Route = () => {
@@ -44,6 +45,10 @@ const Route = () => {
         {
           path: "/deliveries/edit/:deliveryId",
           element: <DeliveryFormPage />,
+        },
+        {
+          path: "/orders/*", // note the *
+          element: <OrdersRoute />,
         },
 
         {
