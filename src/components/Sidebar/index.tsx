@@ -21,8 +21,8 @@ const menu = [
     label: 'Inventory',
     icon: Package,
     children: [
-      { label: 'All Items', path: '/inventory' },
-      { label: 'Stock Adjustments', path: '/inventory/adjustments' },
+      { label: 'Inventories', path: '/inventories' },
+      { label: 'Products', path: '/products' },
     ],
   },
   {
