@@ -9,6 +9,7 @@ import {
   ClipboardList,
   UserRound,
   Truck,
+  Warehouse,
   Turtle,
 } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -41,6 +42,14 @@ const menu = [
     children: [
       { label: "Orders", path: "/sales" },
       { label: "Invoices", path: "/sales/invoices" },
+    ],
+  },
+  {
+    label: 'Warehouse',
+    icon: Warehouse,
+    children: [
+      { label: 'Location', path: '/locations' },
+      { label: 'Warehouse', path: '/warehouses' },
     ],
   },
   { label: 'Purchase Orders', path: '/purchase-order', icon: ClipboardList },
