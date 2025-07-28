@@ -5,6 +5,7 @@ import { Intro } from "../pages/Intro";
 import userRoutes from "./Users";
 import ProtectedRoute from "./ProtectedRoute";
 import { CustomersPage, DeliveriesPage, DeliveryFormPage } from '../pages';
+import ReportsPage from "../pages/Reports";
 
 const Route = () => {
   const routes = useRoutes([
@@ -13,6 +14,10 @@ const Route = () => {
       children: [
         {
           path: "/",
+          element: <Home />,
+        },
+        {
+          path: "/overview",
           element: <Home />,
         },
         ...userRoutes,
@@ -39,6 +44,11 @@ const Route = () => {
         {
           path: "/deliveries/edit/:deliveryId",
           element: <DeliveryFormPage />,
+        },
+
+        {
+          path: "/report",
+          element: <ReportsPage />,
         },
       ],
     },
