@@ -1,25 +1,18 @@
-import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-hot-toast";
-import { AuthService } from "../../../services";
-import { UserRole } from "../../../common/enums";
-import axios, { AxiosError } from "axios";
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
-import styles from "./login.module.css";
-import {
-  Formik,
-  Form,
-  Field,
-  ErrorMessage,
-  FormikValues,
-  FormikHelpers,
-} from "formik";
-import * as Yup from "yup";
-import AOS from "aos";
-import "aos/dist/aos.css";
-import { fbAuth } from "../../../config";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import { AuthService } from '../../../services';
+import { UserRole } from '../../../common/enums';
+import axios, { AxiosError } from 'axios';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
+import * as Yup from 'yup';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { FaEnvelope, FaLock } from 'react-icons/fa';
+import { IoEye, IoEyeOff } from 'react-icons/io5';
+import { fbAuth } from '../../../config';
+
 interface LoginFormValues {
   username: string;
   password: string;
@@ -27,64 +20,50 @@ interface LoginFormValues {
 
 export function Login() {
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePassword = () => setShowPassword((prev) => !prev);
 
-  const initialFormValues: LoginFormValues = {
-    username: "",
-    password: "",
+  const initialValues: LoginFormValues = {
+    username: '',
+    password: '',
   };
 
   const validationSchema = Yup.object().shape({
     username: Yup.string()
-      .required("Username is required")
-      .min(5, "Username must be at least 5 characters")
-      .max(15, "Username must be at maximum 15 characters"),
+      .required('Username is required')
+      .min(5, 'At least 5 characters')
+      .max(15, 'At most 15 characters'),
     password: Yup.string()
-      .required("Password is required")
-      .min(6, "Password must be at least 6 characters")
-      .max(20, "Password must be at maximum 20 characters"),
+      .required('Password is required')
+      .min(6, 'At least 6 characters')
+      .max(20, 'At most 20 characters'),
   });
 
-  useEffect(() => {
-    AOS.init();
-  }, []);
-
   const handleLogin = async (
-    values: FormikValues,
-    { setSubmitting }: FormikHelpers<LoginFormValues>
+    values: LoginFormValues,
+    { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }
   ) => {
-    const { username, password } = values;
     try {
-      await AuthService.login({ username, password });
-      if (AuthService.getCurrentUser()?.userRole == UserRole.Admin)
-        navigate("/users");
-      else navigate("/");
+      await AuthService.login(values);
+      const user = AuthService.getCurrentUser();
+      if (user?.userRole === UserRole.Admin.toString()) navigate('/users');
+      else navigate('/');
     } catch (err) {
-      console.error("Login failed:", err);
-
       if (axios.isAxiosError(err)) {
-        const axiosError = err as AxiosError<any>; // Use any for generic AxiosError
+        const axiosError = err as AxiosError<any>;
+        const data = axiosError.response?.data;
 
-        if (axiosError.response) {
-          const { data } = axiosError.response;
-
-          if (data) {
-            if (data.errors) {
-              // Handle validation errors
-              Object.values(data.errors).forEach((errMsgList) => {
-                (errMsgList as string[]).forEach((errMsg: string) => {
-                  toast.error(errMsg);
-                });
-              });
-            } else if (data.message) {
-              // Handle API exceptions
-              toast.error(data.message);
-            }
-          } else {
-            toast.error("An unknown error occurred.");
-          }
+        if (data?.errors) {
+          Object.values(data.errors).forEach((msgs) =>
+            (msgs as string[]).forEach((msg) => toast.error(msg))
+          );
+        } else if (data?.message) {
+          toast.error(data.message);
+        } else {
+          toast.error('An unknown error occurred.');
         }
       } else {
-        toast.error("An unexpected error occurred.");
+        toast.error('An unexpected error occurred.');
       }
     } finally {
       setSubmitting(false);
@@ -95,179 +74,106 @@ export function Login() {
     const { credential } = credentialResponse;
     if (credential) {
       try {
-        const fbAuthCredential =
-          firebase.auth.GoogleAuthProvider.credential(credential);
-        fbAuth.signInWithCredential(fbAuthCredential);
-
+        const fbCredential = firebase.auth.GoogleAuthProvider.credential(credential);
+        await fbAuth.signInWithCredential(fbCredential);
         await AuthService.googleLogin(credential, UserRole.WarehouseStaff);
-        navigate("/");
-      } catch (err) {
-        console.error("Google authentication failed:", err);
+        navigate('/');
+      } catch (error) {
+        console.error('Google login error:', error);
+        toast.error('Google login failed');
       }
     }
   };
 
-  const labelCharStyles = (index: number) =>
-    ({
-      "--index": index.toString(),
-    } as React.CSSProperties);
-
   return (
-    <div data-aos="zoom-in-left" data-aos-duration="1000">
-      <div className="font-[sans-serif] text-[#333] bg-white">
-        <div className="min-h-screen flex flex-col items-center justify-center">
-          <div className="grid md:grid-cols-2 items-center gap-4 max-w-6xl w-full p-4 m-4 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] rounded-md">
-            <div className="md:max-w-md w-full sm:px-6 py-4">
-              <Formik
-                initialValues={initialFormValues}
-                validationSchema={validationSchema}
-                onSubmit={handleLogin}
-              >
-                {({ isSubmitting }) => (
-                  <Form>
-                    {/* Form elements here */}
-                    <div className="mb-12">
-                      <h3 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-indigo-600">
-                        Sign in
-                      </h3>
-                      <p className="text-sm mt-4 ">
-                        Don't have an account{" "}
-                        <a
-                          href="/auth/signup"
-                          className="font-semibold hover:underline ml-1 whitespace-nowrap bg-gradient-to-r from-sky-400 to-indigo-600 bg-clip-text text-transparent"
-                        >
-                          Register here
-                        </a>
-                      </p>
-                      {/* Other form fields and buttons */}
-                    </div>
+    <div className="flex h-screen font-['Montserrat',sans-serif]">
+      {/* Left section */}
+      <div className="w-1/2 bg-yellow-300 flex flex-col justify-center items-start px-24 py-16">
+        <h1 className="text-5xl font-extrabold mb-4 text-black tracking-wide">WareSync</h1>
+        <h2 className="text-2xl font-semibold mb-6 text-gray-800 max-w-lg leading-snug">
+          Smart Warehouse Management Platform
+        </h2>
+        <p className="text-md text-gray-700 mb-8 max-w-lg leading-relaxed">
+          Optimize your inventory, streamline operations, and manage your warehouse seamlessly from anywhere — anytime.
+        </p>
+        <img
+          src="https://pyrops.com/wp-content/uploads/2023/02/Inventory-scaled.jpg"
+          alt="Warehouse Preview"
+          className="w-full rounded-xl shadow-xl border border-yellow-400"
+        />
+      </div>
 
-                    {/* Username field */}
-                    <div>
-                      <label
-                        htmlFor="username"
-                        className="text-xs block mb-2 font-bold bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-indigo-600 text-lg"
-                      >
-                        Username or Email
-                      </label>
-                      <Field
-                        id="username"
-                        name="username"
-                        type="text"
-                        className="w-full text-sm border-b border-gray-300 focus:border-[#333] px-2 py-3 outline-none"
-                      />
-                      <ErrorMessage
-                        id="username-error"
-                        className={styles.error}
-                        // "text-red-500 p-5 bg-white font-medium text-xs"
-                        name="username"
-                        component="div"
-                      />
-                    </div>
-                    {/* <div className={styles['wave-group']}>
-                      <input required type="text" className={styles.input} />
-                      <span className={styles.bar}></span>
-                      <label className={styles.label}>
-                        <span className={styles['label-char']} style={labelCharStyles(0)}>U</span>
-                        <span className={styles['label-char']} style={labelCharStyles(1)}>s</span>
-                        <span className={styles['label-char']} style={labelCharStyles(2)}>e</span>
-                        <span className={styles['label-char']} style={labelCharStyles(3)}>r</span>
-                        <span className={styles['label-char']} style={labelCharStyles(0)}>n</span>
-                        <span className={styles['label-char']} style={labelCharStyles(1)}>a</span>
-                        <span className={styles['label-char']} style={labelCharStyles(2)}>m</span>
-                        <span className={styles['label-char']} style={labelCharStyles(3)}>e</span>
-                      </label>
-                    </div> */}
+      {/* Right section */}
+      <div className="w-1/2 bg-black text-white flex flex-col justify-center items-center px-16">
+        <div className="w-full max-w-md">
+          <h2 className="text-4xl font-bold mb-8">Log in to WareSync</h2>
 
-                    {/* Password field */}
-                    <div className="mt-8">
-                      <label
-                        htmlFor="password"
-                        className="text-xs block mb-2 font-bold bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-indigo-600 text-lg"
-                      >
-                        Password
-                      </label>
-                      <Field
-                        id="password"
-                        name="password"
-                        type="password"
-                        className="w-full text-sm border-b border-gray-300 focus:border-[#333] px-2 py-3 outline-none"
-                      />
-                      <ErrorMessage
-                        id="password-error"
-                        className={styles.error}
-                        // "text-red-500 p-5 bg-white font-medium text-xs"
-                        name="password"
-                        component="div"
-                      />
-                    </div>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={handleLogin}
+          >
+            {({ isSubmitting }) => (
+              <Form>
+                {/* Username */}
+                <div className="mb-6 relative">
+                  <FaEnvelope className="absolute top-4 left-4 text-gray-400" />
+                  <Field
+                    name="username"
+                    type="text"
+                    placeholder="Username or email"
+                    className="w-full pl-12 pr-4 py-3 rounded-md bg-black border border-gray-600 text-white focus:outline-none focus:border-yellow-300"
+                  />
+                  <ErrorMessage name="username" component="div" className="text-sm text-red-400 mt-1" />
+                </div>
 
-                    {/* Remember me checkbox and Forgot Password link */}
-                    <div className="flex items-center justify-between gap-2 mt-5">
-                      {/* Remember me checkbox */}
-                      <div className="flex items-center">
-                        <Field
-                          id="remember-me"
-                          name="remember-me"
-                          type="checkbox"
-                          className="h-4 w-4 shrink-0 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                        />
-                        <label
-                          htmlFor="remember-me"
-                          className="ml-3 block text-sm"
-                        >
-                          Remember me
-                        </label>
-                      </div>
+                {/* Password */}
+                <div className="mb-6 relative">
+                  <FaLock className="absolute top-4 left-4 text-gray-400" />
+                  <Field
+                    name="password"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="••••••••"
+                    className="w-full pl-12 pr-12 py-3 rounded-md bg-black border border-gray-600 text-white focus:outline-none focus:border-yellow-300"
+                  />
+                  <div
+                    className="absolute top-4 right-4 text-gray-400 cursor-pointer"
+                    onClick={togglePassword}
+                  >
+                    {showPassword ? <IoEyeOff /> : <IoEye />}
+                  </div>
+                  <ErrorMessage name="password" component="div" className="text-sm text-red-400 mt-1" />
+                </div>
 
-                      {/* Forgot Password link */}
-                      <div>
-                        <a
-                          href="/auth/SendOTP"
-                          className="font-semibold text-sm hover:underline bg-gradient-to-r from-sky-400 to-indigo-600 bg-clip-text text-transparent"
-                        >
-                          Forgot Password?
-                        </a>
-                      </div>
-                    </div>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full py-3 bg-yellow-300 text-black font-semibold rounded-md hover:bg-yellow-400 transition"
+                >
+                  {isSubmitting ? 'Signing in...' : 'Sign in'}
+                </button>
+              </Form>
+            )}
+          </Formik>
 
-                    {/* Submit button */}
-                    <div className="mt-12">
-                      <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="w-full shadow-xl py-2.5 px-4 text-sm font-semibold rounded-full text-white bg-gradient-to-r to-indigo-600 from-sky-400 hover:bg-blue-700 focus:outline-none"
-                      >
-                        Sign in
-                      </button>
-                    </div>
+          <div className="text-sm text-gray-400 mt-4">
+            Forgot password?{' '}
+            <a href="/auth/SendOTP" className="text-yellow-300 hover:underline">
+              Send email
+            </a>
+          </div>
 
-                    {/* Additional content */}
-                    <p className="my-8 text-sm text-gray-400 text-center">
-                      or continue with
-                    </p>
-                    <div className="space-x-8 flex justify-center">
-                      {/* Google Login component or other integrations */}
-                      <div className="google-login-button-class">
-                        <GoogleLogin
-                          onSuccess={handleGoogleLogin}
-                          onError={() => {
-                            console.log("Login with Google Failed");
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
-            <div className="md:h-full max-md:mt-10  rounded-xl ">
-              <img
-                src="/src/assets/login-bg.png"
-                className="w-full h-full object-contain"
-                alt="login-image"
-              />
-            </div>
+          <div className="flex items-center my-6">
+            <hr className="flex-grow border-gray-600" />
+            <span className="mx-3 text-gray-500">Or</span>
+            <hr className="flex-grow border-gray-600" />
+          </div>
+
+          <div className="flex justify-center">
+            <GoogleLogin
+              onSuccess={handleGoogleLogin}
+              onError={() => toast.error('Google login failed')}
+            />
           </div>
         </div>
       </div>
