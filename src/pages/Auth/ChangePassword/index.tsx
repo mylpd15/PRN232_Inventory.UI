@@ -1,6 +1,5 @@
-import { ChangeEvent, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { AuthService } from "../../../services";
-import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import axios, { AxiosError } from "axios";
@@ -69,8 +68,6 @@ export function ChangePassword() {
     useEffect(() => {
         AOS.init();
     }, []);
-    const location = useLocation();
-    const { state } = location;
     const handleSaveClick = async (values: FormikValues,
         { setSubmitting }: FormikHelpers<ChangeFormValues>) => {
         try {
