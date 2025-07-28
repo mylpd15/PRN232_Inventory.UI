@@ -17,7 +17,7 @@ import MainLayout from '../../layouts/MainLayout';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const API_URL = 'https://localhost:7136/api/reports/transactions';
+const API_URL = `${import.meta.env.VITE_SERVER_URL}/api/reports/transactions`;
 
 const colorMap: Record<string, string> = {
   in: 'text-green-600',
