@@ -9,6 +9,7 @@ import {
   ClipboardList,
   UserRound,
   Truck,
+  Warehouse,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
