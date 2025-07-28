@@ -7,6 +7,10 @@ import ProtectedRoute from "./ProtectedRoute";
 import { CustomersPage, DeliveriesPage, DeliveryFormPage } from "../pages";
 import OrdersRoute from "./Orders";
 import ReportsPage from "../pages/Reports";
+import { InventoriesPage } from "../pages/Inventories";
+import { ProductsPage } from "../pages/Products";
+
+
 
 const Route = () => {
   const routes = useRoutes([
@@ -39,6 +43,14 @@ const Route = () => {
           element: <CustomersPage />,
         },
         {
+          path: "/inventories",
+          element: <InventoriesPage />,
+        },
+                {
+          path: "/products",
+          element: <ProductsPage />,
+        },
+        {
           path: "/deliveries",
           element: <DeliveriesPage />,
         },
@@ -54,10 +66,12 @@ const Route = () => {
           path: "/deliveries/edit/:deliveryId",
           element: <DeliveryFormPage />,
         },
+
         {
           path: "/orders/*", // note the *
           element: <OrdersRoute />,
         },
+
 
         {
           path: "/report",
