@@ -46,7 +46,7 @@ export function Login() {
     try {
       await AuthService.login(values);
       const user = AuthService.getCurrentUser();
-      if (user?.userRole === UserRole.Admin) navigate('/users');
+      if (user?.userRole === UserRole.Admin.toString()) navigate('/users');
       else navigate('/');
     } catch (err) {
       if (axios.isAxiosError(err)) {

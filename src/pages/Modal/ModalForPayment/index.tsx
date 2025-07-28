@@ -4,7 +4,7 @@ interface ConfirmModalProps {
     open: boolean;
 
 }
-export default function ModalForPayment({open, onClose, onConfirm }: ConfirmModalProps) {
+export default function ModalForPayment({onClose, onConfirm }: ConfirmModalProps) {
     return (
         <div className="modal ">
             <form className="form">

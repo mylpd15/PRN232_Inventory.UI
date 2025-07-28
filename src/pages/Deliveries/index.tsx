@@ -59,7 +59,7 @@ const DeliveriesPage: React.FC = () => {
   // Fetch customers for customer name lookup
   const fetchCustomers = async () => {
     try {
-      const res = await fetch('https://localhost:7136/odata/Customers', {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/odata/Customers`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
@@ -81,7 +81,7 @@ const DeliveriesPage: React.FC = () => {
         data = await getDeliveriesByCustomer(customerId);
       } else {
         // Fetch all deliveries
-        const res = await fetch('https://localhost:7136/odata/Deliveries', {
+        const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/odata/Deliveries`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
