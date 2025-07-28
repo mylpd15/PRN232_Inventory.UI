@@ -97,7 +97,7 @@ export function Header() {
         </div>
 
         <div className="hidden lg:flex lg:gap-x-12 items-center">
-          {appUser?.userRole === UserRole.WarehouseStaff && (
+          {appUser?.userRole === UserRole.WarehouseStaff.toString() && (
             <a
               href="/learning"
               className="learning text-sm font-semibold leading-6 text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-indigo-600 hover:bg-indigo-100 py-2 px-4 rounded-md transition duration-300"
@@ -105,7 +105,7 @@ export function Header() {
               Learning
             </a>
           )}
-          {appUser?.userRole === UserRole.WarehouseManager && (
+          {appUser?.userRole === UserRole.WarehouseManager.toString() && (
             <a
               href="/teaching"
               className="teaching text-sm font-semibold leading-6 text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-indigo-600 hover:bg-indigo-100 py-2 px-4 rounded-md transition duration-300"

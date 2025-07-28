@@ -1,8 +1,5 @@
-import { useState } from "react";
 import { SendOTPservice } from "../../../services/SendOTPservice";
-import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 import axios, { AxiosError } from "axios";
 
@@ -13,10 +10,8 @@ import {
     Field,
     ErrorMessage,
     FormikValues,
-    FormikHelpers,
 } from "formik";
 import * as Yup from "yup";
-import AOS from "aos";
 import "aos/dist/aos.css";
 interface SendOTPFormValues {
     email: string;
@@ -32,11 +27,8 @@ export function SendOTP() {
 
     };
     const navigate = useNavigate();
-    const location = useLocation();
-    const { state } = location;
 
-    const handleSaveClick = async (values: FormikValues,
-        { setSubmitting }: FormikHelpers<SendOTPFormValues>) => {
+    const handleSaveClick = async (values: FormikValues) => {
         const { email } = values;
         try {
 
@@ -47,7 +39,6 @@ export function SendOTP() {
         } catch (err) {
 
             console.error("Send Fail", err)
-            const error = err as AxiosError;
             if (axios.isAxiosError(err)) {
                 const axiosError = err as AxiosError<any>; // Use any for generic AxiosError
 
