@@ -90,7 +90,7 @@ const DeliveryFormPage: React.FC = () => {
 
   useEffect(() => {
     // Fetch products for dropdown
-    fetch("https://localhost:7136/odata/Products", {
+    fetch(`${import.meta.env.VITE_SERVER_URL}/odata/Products`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
@@ -104,7 +104,7 @@ const DeliveryFormPage: React.FC = () => {
 
     // Fetch customers for dropdown
    
-    fetch("https://localhost:7136/odata/Customers", {
+    fetch(`${import.meta.env.VITE_SERVER_URL}/odata/Customers`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },

@@ -64,7 +64,7 @@ const CustomersPage: React.FC = () => {
 
   const checkCustomerDeliveries = async (customerId: number): Promise<boolean> => {
     try {
-      const response = await fetch(`https://localhost:7136/odata/Deliveries?$filter=customerID eq ${customerId}`, {
+      const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/odata/Deliveries?$filter=customerID eq ${customerId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
