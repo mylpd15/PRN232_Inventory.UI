@@ -52,10 +52,17 @@ const menu = [
       { label: 'Warehouse', path: '/warehouses' },
     ],
   },
-  { label: 'Purchase Orders', path: '/purchase-order', icon: ClipboardList },
   { label: 'Reports', path: '/report', icon: BarChart2 },
   { label: 'Customers', path: '/customers', icon: UserRound },
   { label: 'Deliveries', path: '/deliveries', icon: Truck },
+   {
+    label: "Orders",
+    icon: Turtle,
+    children: [
+      { label: "All Orders", path: "/orders" },
+      { label: "Manage Orders", path: "/orders/manage" },
+    ],
+  },
   { label: 'Users', path: '/users', icon: Users },
 ];
 
