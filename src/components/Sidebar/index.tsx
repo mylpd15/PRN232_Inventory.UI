@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { UserRole } from '../../common/enums/AppUser/UserRole';
+import { UserRole } from "../../common/enums/AppUser/UserRole";
 
 interface User {
   $id: string;
@@ -31,9 +31,8 @@ const menu = [
     label: "Inventory",
     icon: Package,
     children: [
-      { label: 'Inventories', path: '/inventories' },
-      { label: 'Products', path: '/products' },
-
+      { label: "Inventories", path: "/inventories" },
+      { label: "Products", path: "/products" },
     ],
   },
   {
@@ -45,17 +44,17 @@ const menu = [
     ],
   },
   {
-    label: 'Warehouse',
+    label: "Warehouse",
     icon: Warehouse,
     children: [
-      { label: 'Location', path: '/locations' },
-      { label: 'Warehouse', path: '/warehouses' },
+      { label: "Location", path: "/locations" },
+      { label: "Warehouse", path: "/warehouses" },
     ],
   },
-  { label: 'Reports', path: '/report', icon: BarChart2 },
-  { label: 'Customers', path: '/customers', icon: UserRound },
-  { label: 'Deliveries', path: '/deliveries', icon: Truck },
-   {
+  { label: "Reports", path: "/report", icon: BarChart2 },
+  { label: "Customers", path: "/customers", icon: UserRound },
+  { label: "Deliveries", path: "/deliveries", icon: Truck },
+  {
     label: "Orders",
     icon: ClipboardList,
     children: [
@@ -63,7 +62,7 @@ const menu = [
       { label: "Manage Orders", path: "/orders/manage" },
     ],
   },
-  { label: 'Users', path: '/users', icon: Users },
+  { label: "Users", path: "/users", icon: Users },
 ];
 
 export default function Sidebar() {
@@ -73,13 +72,13 @@ export default function Sidebar() {
 
   // Get current user from localStorage
   useEffect(() => {
-    const userJson = localStorage.getItem('user');
+    const userJson = localStorage.getItem("user");
     if (userJson) {
       try {
         const user = JSON.parse(userJson) as User;
         setCurrentUser(user);
       } catch (error) {
-        console.error('Error parsing user from localStorage:', error);
+        console.error("Error parsing user from localStorage:", error);
       }
     }
   }, []);
@@ -90,7 +89,7 @@ export default function Sidebar() {
 
     const userRole = currentUser.userRole;
 
-    return menu.filter(item => {
+    return menu.filter((item) => {
       // Admin (1) - can access everything
       if (userRole === UserRole.Admin) {
         return true;
@@ -103,27 +102,38 @@ export default function Sidebar() {
 
       // WarehouseStaff (3) - can access Customer, Deliveries, Inventory, Dashboard (view only)
       if (userRole === UserRole.WarehouseStaff) {
-        return ['Dashboard', 'Customers', 'Deliveries', 'Inventory'].includes(item.label);
+        return ["Dashboard", "Customers", "Deliveries", "Inventory"].includes(
+          item.label
+        );
       }
 
       // SalesStaff (4) - can manage inventory, manage sales
       if (userRole === UserRole.SalesStaff) {
-        return ['Dashboard', 'Inventory', 'Sales'].includes(item.label);
+        return ["Dashboard", "Inventory", "Sales"].includes(item.label);
       }
 
       // DeliveryStaff (5) - can view only deliveries
       if (userRole === UserRole.DeliveryStaff) {
-        return ['Dashboard', 'Deliveries'].includes(item.label);
+        return ["Dashboard", "Deliveries"].includes(item.label);
       }
 
       // Accountant (6) - can manage inventory, manage sales and view deliveries
       if (userRole === UserRole.Accountant) {
-        return ['Dashboard', 'Inventory', 'Sales', 'Deliveries'].includes(item.label);
+        return ["Dashboard", "Inventory", "Sales", "Deliveries"].includes(
+          item.label
+        );
       }
 
       // Auditor (7) - can view all but view only
       if (userRole === UserRole.Auditor) {
-        return ['Dashboard', 'Customers', 'Deliveries', 'Inventory', 'Sales', 'Reports'].includes(item.label);
+        return [
+          "Dashboard",
+          "Customers",
+          "Deliveries",
+          "Inventory",
+          "Sales",
+          "Reports",
+        ].includes(item.label);
       }
 
       return false;
@@ -133,7 +143,10 @@ export default function Sidebar() {
   // Check if Reports tab should be disabled (only Admin and WarehouseManager)
   const isReportsDisabled = () => {
     if (!currentUser) return true;
-    return currentUser.userRole !== UserRole.Admin && currentUser.userRole !== UserRole.WarehouseManager;
+    return (
+      currentUser.userRole !== UserRole.Admin &&
+      currentUser.userRole !== UserRole.WarehouseManager
+    );
   };
 
   const toggleMenu = (label: string) => {
@@ -143,7 +156,7 @@ export default function Sidebar() {
   };
 
   const isActive = (path: string) =>
-    location.pathname === path || location.pathname.startsWith(path + '/');
+    location.pathname === path || location.pathname.startsWith(path + "/");
 
   const filteredMenu = getFilteredMenu();
 
@@ -152,9 +165,11 @@ export default function Sidebar() {
       <div className="text-xl font-bold mb-6 px-2 text-white">WareSync</div>
       <nav className="flex flex-col gap-1">
         {filteredMenu.map((item) => {
-          const isGroupActive = item.children?.some((child) => isActive(child.path));
+          const isGroupActive = item.children?.some((child) =>
+            isActive(child.path)
+          );
           const Icon = item.icon;
-          const isDisabled = item.label === 'Reports' && isReportsDisabled();
+          const isDisabled = item.label === "Reports" && isReportsDisabled();
 
           return item.children ? (
             <div key={item.label}>
@@ -162,8 +177,12 @@ export default function Sidebar() {
                 onClick={() => toggleMenu(item.label)}
                 disabled={isDisabled}
                 className={`w-full flex items-center justify-between px-4 py-2 rounded-md transition-colors duration-200
-                  ${isGroupActive ? 'bg-red-500 text-white font-semibold' : 'text-gray-300 hover:bg-[#2A2A2A]'}
-                  ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  ${
+                    isGroupActive
+                      ? "bg-red-500 text-white font-semibold"
+                      : "text-gray-300 hover:bg-[#2A2A2A]"
+                  }
+                  ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
               >
                 <div className="flex items-center gap-3">
                   <Icon size={18} color={isGroupActive ? "#fff" : "#ccc"} />
@@ -201,17 +220,20 @@ export default function Sidebar() {
           ) : (
             <Link
               key={item.path}
-              to={isDisabled ? '#' : item.path}
+              to={isDisabled ? "#" : item.path}
               className={`flex items-center gap-3 px-4 py-2 rounded-md transition-colors duration-200
-                ${isActive(item.path)
-                  ? 'bg-yellow-400 text-white font-semibold'
-                  : 'text-gray-300 hover:bg-[#2A2A2A]'}
-                ${isDisabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
+                ${
+                  isActive(item.path)
+                    ? "bg-yellow-400 text-white font-semibold"
+                    : "text-gray-300 hover:bg-[#2A2A2A]"
+                }
+                ${
+                  isDisabled
+                    ? "opacity-50 cursor-not-allowed pointer-events-none"
+                    : ""
+                }`}
             >
-              <Icon
-                size={18}
-                color={isActive(item.path) ? "#fff" : "#ccc"}
-              />
+              <Icon size={18} color={isActive(item.path) ? "#fff" : "#ccc"} />
               <span>{item.label}</span>
             </Link>
           );
