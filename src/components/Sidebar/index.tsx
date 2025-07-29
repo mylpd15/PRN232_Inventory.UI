@@ -108,7 +108,7 @@ export default function Sidebar() {
 
       // SalesStaff (4) - can manage inventory, manage sales
       if (userRole === UserRole.SalesStaff) {
-        return ['Dashboard', 'Inventory', 'Sales'].includes(item.label);
+        return ['Dashboard', 'Inventory', 'Sales', 'Orders'].includes(item.label);
       }
 
       // DeliveryStaff (5) - can view only deliveries
