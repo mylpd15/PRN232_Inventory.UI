@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import MainLayout from "../../layouts/MainLayout";
 import { getProviders, createProvider } from "../../services/ProviderService";
 import { toast } from "react-hot-toast";
-import { Pencil, Trash, View } from "lucide-react";
 
 interface Provider {
   ProviderID: number;
