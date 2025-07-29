@@ -1,7 +1,6 @@
 import {
   LayoutDashboard,
   Package,
-  ShoppingCart,
   BarChart2,
   Users,
   ChevronDown,
@@ -36,14 +35,7 @@ const menu = [
       { label: "Products", path: "/products" },
     ],
   },
-  {
-    label: "Sales",
-    icon: ShoppingCart,
-    children: [
-      { label: "Orders", path: "/sales" },
-      { label: "Invoices", path: "/sales/invoices" },
-    ],
-  },
+  
   {
     label: "Warehouse",
     icon: Warehouse,
@@ -123,7 +115,7 @@ export default function Sidebar() {
 
       // Accountant (6) - can manage inventory, manage sales and view deliveries
       if (userRole === UserRole.Accountant) {
-        return ["Dashboard", "Inventory", "Sales", "Deliveries"].includes(
+        return ["Dashboard", "Inventory", "Deliveries"].includes(
           item.label
         );
       }
@@ -135,7 +127,6 @@ export default function Sidebar() {
           "Customers",
           "Deliveries",
           "Inventory",
-          "Sales",
           "Reports",
         ].includes(item.label);
       }

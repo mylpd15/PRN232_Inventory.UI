@@ -456,6 +456,41 @@ const DeliveryFormPage: React.FC = () => {
     navigate(-1);
   };
 
+  const handleUpdateStatusOnly = async () => {
+    if (!deliveryId || !form.Status) return;
+    
+    setLoading(true);
+    try {
+      await updateDelivery(Number(deliveryId), {
+        SalesDate: form.SalesDate,
+        CustomerID: form.CustomerID,
+        Status: form.Status,
+      });
+      toast.success("Delivery status updated successfully");
+      // Navigate back to previous page
+      navigate(-1);
+    } catch (error: unknown) {
+      let errorMessage = "Failed to update delivery status";
+      
+      if (error instanceof Error) {
+        try {
+          const errorData = JSON.parse(error.message);
+          if (errorData.message) {
+            errorMessage = errorData.message;
+          } else {
+            errorMessage = error.message;
+          }
+        } catch {
+          errorMessage = error.message;
+        }
+      }
+      
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (loading && isEditMode) {
     return (
       <MainLayout>
@@ -751,6 +786,17 @@ const DeliveryFormPage: React.FC = () => {
                     : "Create Delivery"}
                 </button>
               </>
+            )}
+            {/* Add Update Status Only button for edit mode */}
+            {isEditMode && canEditStatus && (
+              <button
+                type="button"
+                className="px-6 py-2 rounded bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-50"
+                onClick={handleUpdateStatusOnly}
+                disabled={loading}
+              >
+                {loading ? "Updating..." : "Update Status Only"}
+              </button>
             )}
           </div>
         </form>
