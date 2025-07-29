@@ -9,8 +9,7 @@ import OrdersRoute from "./Orders";
 import ReportsPage from "../pages/Reports";
 import { InventoriesPage } from "../pages/Inventories";
 import { ProductsPage } from "../pages/Products";
-
-
+import ProviderPage from "../pages/Providers/ProviderPage";
 
 const Route = () => {
   const routes = useRoutes([
@@ -46,7 +45,7 @@ const Route = () => {
           path: "/inventories",
           element: <InventoriesPage />,
         },
-                {
+        {
           path: "/products",
           element: <ProductsPage />,
         },
@@ -71,7 +70,10 @@ const Route = () => {
           path: "/orders/*", // note the *
           element: <OrdersRoute />,
         },
-
+        {
+          path: "/providers",
+          element: <ProviderPage />,
+        },
 
         {
           path: "/report",
