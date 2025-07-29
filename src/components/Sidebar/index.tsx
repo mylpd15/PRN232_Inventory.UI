@@ -10,6 +10,7 @@ import {
   UserRound,
   Truck,
   Warehouse,
+  Turtle,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -54,6 +55,7 @@ const menu = [
   { label: "Reports", path: "/report", icon: BarChart2 },
   { label: "Customers", path: "/customers", icon: UserRound },
   { label: "Deliveries", path: "/deliveries", icon: Truck },
+  { label: "Providers", path: "/providers", icon: Turtle },
   {
     label: "Orders",
     icon: ClipboardList,
@@ -109,7 +111,9 @@ export default function Sidebar() {
 
       // SalesStaff (4) - can manage inventory, manage sales
       if (userRole === UserRole.SalesStaff) {
-        return ["Dashboard", "Inventory", "Sales"].includes(item.label);
+        return ["Dashboard", "Inventory", "Sales", "Orders"].includes(
+          item.label
+        );
       }
 
       // DeliveryStaff (5) - can view only deliveries

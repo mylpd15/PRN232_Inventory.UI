@@ -79,7 +79,8 @@ const OrdersPage: React.FC = () => {
 
       setOrders(ordersWithTotal);
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : "Không thể tải dữ liệu đơn hàng";
+      const errorMessage =
+        err instanceof Error ? err.message : "Không thể tải dữ liệu đơn hàng";
       toast.error(errorMessage);
     } finally {
       setLoading(false);
@@ -118,7 +119,8 @@ const OrdersPage: React.FC = () => {
       toast.success(`Đã xóa đơn hàng #${orderId}`);
       fetchData();
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : "Xóa đơn hàng thất bại";
+      const errorMessage =
+        err instanceof Error ? err.message : "Xóa đơn hàng thất bại";
       toast.error(errorMessage);
     }
   };
