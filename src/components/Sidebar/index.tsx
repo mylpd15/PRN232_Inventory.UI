@@ -57,7 +57,7 @@ const menu = [
   { label: 'Deliveries', path: '/deliveries', icon: Truck },
    {
     label: "Orders",
-    icon: Turtle,
+    icon: ClipboardList,
     children: [
       { label: "All Orders", path: "/orders" },
       { label: "Manage Orders", path: "/orders/manage" },
